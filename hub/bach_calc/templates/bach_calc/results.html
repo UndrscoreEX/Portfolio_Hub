@@ -1,0 +1,41 @@
+{% extends 'bach_calc/base_en.html' %}
+
+{% block title %} Results {% endblock title %}
+
+<!-- add all components here: then collet them from the vue methods. use these values to if else the elements below -->
+{% block content %}
+        <div class="d-none">
+            <p id="ob_b">{{ results.n_obese }}</p>
+            <p id="sm_b">{{ results.n_smoker }} </p>
+            <p id="mar_b">{{ results.n_married }}</p>
+        </div>
+        
+        <h1 class="heading my-5 mx-auto flex w-75" id="header">Your Bachelor results:</h1>
+        
+
+    <div class="container w-50 card card-inner py-3 expand-mobile love-inner">
+        <div class="border-left w-50 mx-auto expand-mobile">
+            <h2 class="sub-heading border-bottom mb-3">Chosen conditions</h2>
+            <p class="result-text">  Mininum Age: {{ results.min_age }}</p>
+            <p class="result-text" > Maximum Age: {{ results.max_age |add:'1' }} </span></p>
+            <p class="result-text"> Minimum Income: {{ results.income }}</p>
+            <p class="result-text"> Minium Height: {{ results.height |add:'1'}}</p>
+            <div v-html="o_button"></div>
+            <div v-html="m_button"></div>
+            <div v-html="s_button"></div>
+        </div>
+    </div>
+    
+    <div class="container w-50 card card-inner text-center py-5 expand-mobile love-inner">
+        <p class="result-text-final-sub">According to stastical data, the amount of men between <b> {{ results.min_age }} </b> and <b>{{ results.max_age |add:'1' }}</b> that meet your standards in Japan is:</p>
+        <p class="result-text-final" id="final-per">{{ results.final }}%</p>
+    </div>
+
+    <div class="container w-50 expand-mobile">
+        <div class="text-center row">    
+                 <a class="btn btn-dark button-text text-decoration-none result-text" role='button' href="{% url 'index_eng' %}">Try again</a>
+        </div>
+    </div>
+    
+    
+  {% endblock content %}

@@ -1,0 +1,101 @@
+{% extends 'bach_calc/base_en.html'  %}
+
+    {% block title %}Japanese Bachelor Calculator {% endblock title %}
+
+    {% block content %}
+        <h1 class="heading my-5 mx-auto flex w-75">Bachelor Calculator</h1>
+        <div class="container mt-5 mx-auto flex w-50 expand-mobile">
+            
+        <form action="{% url 'conclusion_eng' %}" method="POST" @submit="checkForm">
+            {% csrf_token %}
+            <div class="card card-inner love-inner">
+                
+                <div class="row g-0 my-2">
+
+                    <!-- Min age -->
+                    <div class=" col-md-6 text-center ">
+                        <p class="card-inner-text" v-if="min_age_val"> Min Age: $[min_age_val]</p>
+                        <p class="card-inner-text" v-else> Min Age: Any</p>
+                        <div class="p-2 fluid">
+                            <div :class="{ error : age_error}">
+                                <input style="width: 90%;" class=" " type="range" min="20" max="70"  name="mn_age_value"  step='5' v-model="min_age_val" @click="age_error_check"  >
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Max age -->
+                    <div class="col-md-6 text-center" >
+                        <p class="card-inner-text" v-if="max_age_val"> Max Age: $[max_age_val]</p>
+                        <p class="card-inner-text" v-else> Max Age: Any</p>
+                        <div class="p-2">
+                            <div :class="{ error : age_error}">
+                                <input style="width: 90%;" class="" type="range" min="20" max="70" name="mx_age_value"  step='5' v-model="max_age_val" @click="age_error_check">
+                            </div>
+
+                        </div>
+                    </div>
+                        
+                </div>
+            </div>
+
+            <div class="card card-inner love-inner">
+                <!-- @change='adjustInc' -->
+                <!-- income --> 
+                <div class="text-center my-2">
+                    <p class="card-inner-text" v-if="inc_val>80 ">Min Income: $[inc_val] 万 +</p>
+                    <p class="card-inner-text" v-else>Min Income: Any</p>
+                    <input class="w-75"  type="range" min="80" max="1200"   name="income_value" step='20' v-model=inc_val >
+                </div>
+            </div>
+            
+            <!--    Height --> 
+            
+            <div class="card card-inner love-inner">
+                <div class="text-center my-2">
+                    <p class="card-inner-text" v-if="ht_val >139"> Min Height: $[ht_val] cm +</p>
+                    <p class="card-inner-text" v-else>Min  Height: Any </p>
+                    <input class="w-75" type="range" min="139" max="190"  name="height_value" step='1' v-model=ht_val >
+                </div>
+
+            </div>
+
+            <div class="card card-inner love-inner">
+                <div class="text-center row my-2">
+                    <!-- Obese -->
+                    <div class=" col-md-4">
+                        <label class="sml-label form-check-label align-middle" style="padding-right:0.2rem ;" for="obese"> Not Obese: </label>
+                        <input id="obese" class="form-check-input align-middle" type="checkbox" name="n_obese_value" @click="obese = !obese" >
+                    </div>
+                    <!-- Married -->
+                    <div class=" col-md-4 ">
+                        <label class="sml-label form-check-label align-middle" style="padding-right:0.2rem ;" for="marry"> Not Married: </label>
+                        <input id="marry" class="form-check-input align-middle" type="checkbox" name="n_married_value" @click="mar = !mar" >
+                    </div>
+                    <div class=" col-md-4 ">
+                        <label class="sml-label form-check-label align-middle" style="padding-right:0.2rem ;" for="smoke_val"> Not a Smoker: </label>
+                        <input id="smoke_val" class="form-check-input align-middle" type="checkbox" name="n_smoke" @click="smoke = !smoke" >
+                    </div>
+                </div>
+                
+
+            </div>
+            <div class=" ">
+                <div class="text-center row">    
+                    <button class="text-center third-text btn btn-dark button-text " type="submit"> Let's see your chances</button>
+                        <p v-if="final_error" class="text-center err">
+                                    Please adjust the selected minimum and maximum age 
+                                </p>
+                </div>
+            </div>
+
+            
+        </form>
+        
+
+
+    </div>
+    <hr>
+
+    {% endblock content %}
+
+    

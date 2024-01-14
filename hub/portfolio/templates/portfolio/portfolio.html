@@ -1,0 +1,148 @@
+  {% extends "portfolio/base.html" %}
+  {% block title %} Main Page {% endblock %}
+  
+  {% block body %}
+
+
+    <!-- change fonts + colors for text -->
+
+    <div style="overflow-x:hidden">
+    <div class="container-fluid row" >
+              <div class="col-lg-4 col-md-6 col-sm-4 ">
+                <img src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Prof_coaching/mmexport1585419446315 (2).jpg" alt="" style="min-width: 500px; ; " class="main-pic"  >
+              </div>
+              <div class="col-lg-8 col-md-6 col-sm-8 " style="background-color: white;">
+                  <h1 class="display-1" style=" margin-right: 2rem;">
+                    I am 
+                      <span>
+                          <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                              <div class="carousel-item active">
+                                <p>An Engineer</p>
+                              </div>
+                              <div class="carousel-item ">
+                                <p>A Designer </p>
+                              </div>
+                              <div class="carousel-item">
+                                <p>A Professional</p>
+                              </div>
+                              <div class="carousel-item main-color">
+                                <p>Ethan</p>
+                              </div>
+                            </div>
+                          </div>
+    
+                      </span>
+
+                  </h1>
+                <div>
+                  <p class="py-4 special-text">
+                    <span class="main-color ">Jack of all trades </span>
+                    I'm proud to be a successful self-starter and largely self-taught. 
+                    Through my long career in Japan, I have a unique understanding of the international development process, Japanese business and creative design. 
+                  </p>
+                </div>
+              </div>    
+          </div>
+
+        <hr>
+        <hr>
+          <div class="container">
+            <div class="mx-3 text-start" > 
+              <a class="port-title" href="{% url 'it' %}">
+
+                <p  class=" display-1" >FullStack Web Development</p>
+              </a>
+            </div>
+
+            <div class=" my-2 row img-cont">
+              <div class="col-md-6 pt-2  col-xs-6 justify-content-center ">
+                <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Port1.png">
+              </div>
+              <div class="col-md-6  pt-2 col-xs-6 justify-content-center ">
+                <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Rising-wasabi.png">
+              </div>
+              <div class="col-md-6 pt-2  col-xs-6 justify-content-center ">
+                <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/AWS-test2.png">
+              </div>
+              <div class="col-md-6  pt-2 col-xs-6 justify-content-center ">
+                <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Db-app1.png">
+              </div>
+            </div>
+            
+            <hr>
+            <div class="container ">
+              <div class="my-auto my-2 mx-3" > 
+                <a class="port-title" href="{% url 'personalCoach' %}">
+
+                  <p class=" display-1 text-end" >Professional Coaching<p>
+                </a>
+              </div>
+              <div class=" my-2 row img-cont">
+                <div class="col-md-6 pt-2  col-xs-6 justify-content-center">
+                  <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Presentation1.png">
+                </div>
+                <div class="col-md-6  pt-2 col-xs-6 justify-content-center">
+                  <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Presentation2.png">
+                </div>
+              </div>
+            </div>
+              <hr> 
+
+
+            <div href="{% url 'graphicD' %}" class="my-auto my-2" > 
+              <a class="port-title" href="{% url 'graphicD' %}">
+
+                <p class=" display-1 text-start" >Graphic Design</p>
+              </a>
+            </div>
+             
+                <div class=" my-2 row img-cont">
+                  <div class="col-md-6 pt-2  col-xs-6 justify-content-center">
+                    <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Design1.png">
+                  </div>
+                  <div class="col-md-6  pt-2 col-xs-6 justify-content-center">
+                    <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Design2.png">
+                  </div>
+                </div>
+                  <hr>
+                  
+                  <!-- second row -->
+                  <div class="mx-3 text-start" > 
+                    <a class="port-title" href="{% url 'graphicD' %}">
+
+                      <p  class=" display-1 text-end" >Content Creation</p>
+                    </a>
+                  </div>
+
+                  <div class=" my-2 row img-cont">
+                    <div class="col-md-6 pt-2  col-xs-6 justify-content-center">
+                      <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Content1.png">
+                    </div>
+                    <div class="col-md-6  pt-2 col-xs-6 justify-content-center">
+                      <img class="w-100" src="https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/portfolio_img/img/Content3.png">
+                    </div>
+                  </div>
+                  <!-- second row pt-2 -->
+                 
+                    <hr>
+                  
+                  <!-- third row -->
+                  
+
+                  <!-- new ones -->
+
+
+
+                    
+                    <!-- second row pt-2 -->
+                   
+                      <hr>
+                
+              </div>
+          </div>
+      <script>$('.carousel').carousel({
+        interval: 800
+      })</script>
+    
+{% endblock %}

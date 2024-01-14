@@ -1,4 +1,4 @@
 # .gitignore
 
-.env
-.ToDo
+hub/.env
+hub/ToDo
