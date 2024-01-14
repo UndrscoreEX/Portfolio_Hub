@@ -2,4 +2,5 @@
 
 hub/.env
 hub/ToDo
-.venv
+venv/
+venv
