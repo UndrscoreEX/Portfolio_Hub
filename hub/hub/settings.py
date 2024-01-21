@@ -24,6 +24,7 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1','18.176.194.245', 'underscore-ex.com', 
 
 INSTALLED_APPS = [
     'channels',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -94,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-ASGI_APPLICATION = 'hub.wsgi.application'
+ASGI_APPLICATION = 'hub.asgi.application'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
