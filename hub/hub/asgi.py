@@ -5,6 +5,10 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 import ai_gen.routing
 from daphne.server import Server
+import logging
+
+# Set the logging level (you can adjust it based on your needs)
+logging.basicConfig(level=logging.INFO)
 
 
 
