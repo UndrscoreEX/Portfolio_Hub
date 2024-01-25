@@ -23,7 +23,7 @@ application = ProtocolTypeRouter({
 })  
 
 if __name__ == "__main__":
-   server = Server(application)
+    server = Server(application)
     # server.listen('0.0.0.0',2020)
 #    server.run(port=8000)
     server.run(application, host='0.0.0.0', port=8000)
