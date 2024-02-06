@@ -12,6 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+S3_PREFIX = "https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com"
+CLOUDFRONT_PREFIX = "https://d38261ux8dbby0.cloudfront.net"
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -59,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'hub.context_processors.cloudfront_prefix'
             ],
         },
     },
