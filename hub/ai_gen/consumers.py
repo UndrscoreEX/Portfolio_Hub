@@ -4,34 +4,66 @@ import random
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import boto3
+from .db_interactions import DB_interactions 
 load_dotenv()
+
 
 client = OpenAI(api_key=os.getenv('OPEN_AI_Secret_Key'))
 
-# Load environment variables from .env file
-
-
-
-
 class FeedConsumer(WebsocketConsumer):
-
-    FULL_TEXT = True
-
-    def get_session_submissions(self):
-        return self.scope["session"].get('submissions')
+    # if its a live test or dummy test.
+    CALL_OPENAI = True
+    client = boto3.client('dynamodb', region_name='ap-northeast-1')
     
+
+    def get_session_submissions(self, sess_id):
+        
+        resp = self.client.get_item(
+        TableName = 'SessionData',
+        Key={
+            "SessionID": {'S': sess_id},
+            },
+        ) 
+
+        print(resp)
+        token = int(resp['Item']['Tokens']['N'])
+        if resp['Item'].get('ImageCode'):
+            img_arr = (resp['Item']['ImageCode']['SS'])
+        else:
+            img_arr = None
+        return token, img_arr
     
-    def set_session_submissions(self, value):
-        self.scope['session']['submissions'] = value
-        self.scope['session'].save()
+    def set_session_submissions(self, sess_id, value, img):
+
+        self.client.update_item(
+            TableName = 'SessionData',
+            Key={
+                 "SessionID": {'S': sess_id},
+            },
+            AttributeUpdates={
+                'ImageCode' : {
+                    'Value' : {
+                        'SS': img
+                        }
+                    },
+                'Tokens' : {
+                    'Value' : {
+                        'N': str(value)
+                        }
+                    }
+                }    
+            )
+        print('proof that the images were loaded', img)
         
         
 
     def connect(self):
-        self.accept()
-        session_submissions = self.get_session_submissions()
-
-        # :::: This will not work if there is multiple servers. You will need to get a redis DB for a cache layer and query this each time. 
+        self.accept()  
+        session_ID = self.scope['session'].get('session_ID')
+        # instead of checking session for tokens, ill check session for sessionID, then query Dynamodb table
+        print(self.scope['session'].items())
+        session_submissions, prev_images = self.get_session_submissions(session_ID)
         try:
             # all_theme_tags = [x.name for x in DB_interactions.tags.all()]
             self.send(text_data=json.dumps({
@@ -48,15 +80,14 @@ class FeedConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         from .db_interactions import DB_interactions , submissions_check
-        session_submissions = self.get_session_submissions()
+        session_ID = self.scope['session'].get('session_ID')
+        session_submissions, prev_images = self.get_session_submissions(session_ID)
 
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
         salt = DB_interactions.get_salt()
-        print(salt)
-
-
+        # print(salt)
 
         try:
             theme_tags = DB_interactions.get_image_tags(theme_tags=message)
@@ -88,29 +119,33 @@ class FeedConsumer(WebsocketConsumer):
             }
 
             # 　checks if there are enough tokens. 
-            if submissions_check(session_submissions):  
+            if session_submissions>0:  
                 promt_for_dall_e = f'create an an scene that contains the themes of {joined_img_tags} {salt}'
-
                 session_submissions -= 1
-                self.scope["session"]['submissions'] = session_submissions
+                # self.scope["session"]['submissions'] = session_submissions
 
-
+                
                 # Updates the new number of tokens 
-                self.set_session_submissions(session_submissions)
 
 
                 # to check whether I will do paid request or just test it. 
-                if self.FULL_TEXT:
+                if self.CALL_OPENAI:
                     # Dall-E api call 
                     response = client.images.generate(prompt= promt_for_dall_e,
                     n=1,
                     # size="256x256",
                     size ='512x512')
 
-
-
                     dall_e_image = response.data[0].url
                     print('Image URL: ',dall_e_image)
+
+                    if prev_images:
+                        prev_images.append(dall_e_image)
+                    else:
+                        prev_images = [dall_e_image,]
+                    self.set_session_submissions(session_ID, session_submissions, prev_images)
+
+
                     # print('simulated succesful request')
                     self.send(text_data=json.dumps({
                         'type' : 'search',
@@ -159,7 +194,6 @@ class FeedConsumer(WebsocketConsumer):
                 'type' : 'search_fail',
                 'result' : str(e),
             }))
-            print('sldjfjhakl;djfalsdj')
             
         
         

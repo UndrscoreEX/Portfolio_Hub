@@ -11,6 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+AI_GEN_TEMPLATE_DIR = BASE_DIR / 'ai_gen/templates/ai_image_gen'
+
+print(AI_GEN_TEMPLATE_DIR)
 
 S3_PREFIX = "https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com"
 CLOUDFRONT_PREFIX = "https://d38261ux8dbby0.cloudfront.net"
