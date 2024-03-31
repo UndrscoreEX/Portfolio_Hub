@@ -25,6 +25,7 @@ def check_submissions_or_create(req):
                 Item = {
                     'SessionID': {'S': session_ID},
                     'Tokens': {'N': '5'},
+                    'SessionTTL' : {'N':str(int(time.time()+86400))}
                     }
             )
             cur_submissions = 5

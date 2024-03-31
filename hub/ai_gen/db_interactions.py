@@ -1,6 +1,6 @@
 import random
 from .models import Theme_tags,Salt, Saved_images
-import boto3
+
 
 class DB_interactions:
     tags = Theme_tags.objects
@@ -43,17 +43,17 @@ class DB_interactions:
 
 
 # This is here because I want to add a redis cache layer // turns out im adding dynamoDB cache layer instead. opps
-def submissions_check(sess_id):
-    client = boto3.client('dynamodb', region_name='ap-northeast-1')
-    resp = client.get_item(
-    TableName = 'SessionData',
-    Key={
-        "SessionID": {'S': sess_id},
-        },
-    ProjectionExpression = "Tokens"
-    ) 
+# def submissions_check(sess_id):
+#     client = boto3.client('dynamodb', region_name='ap-northeast-1')
+#     resp = client.get_item(
+#     TableName = 'SessionData',
+#     Key={
+#         "SessionID": {'S': sess_id},
+#         },
+#     ProjectionExpression = "Tokens"
+#     ) 
 
-    print(resp)
-    token = int(resp['Item']['Tokens']['N'])
-    print(f'remaining tokens are : {token}')
-    return token> 0, token
+#     print(resp)
+#     token = int(resp['Item']['Tokens']['N'])
+#     print(f'remaining tokens are : {token}')
+#     return token> 0, token

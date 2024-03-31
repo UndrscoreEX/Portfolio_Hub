@@ -5,7 +5,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import boto3
-from .db_interactions import DB_interactions 
+import time
 load_dotenv()
 
 
@@ -51,7 +51,12 @@ class FeedConsumer(WebsocketConsumer):
                     'Value' : {
                         'N': str(value)
                         }
+                    },
+                "SessionTTL": {
+                    'Value' : {
+                        'N' : str(int(time.time()+86400))
                     }
+                }
                 }    
             )
         print('proof that the images were loaded', img)
@@ -79,7 +84,7 @@ class FeedConsumer(WebsocketConsumer):
 
 
     def receive(self, text_data):
-        from .db_interactions import DB_interactions , submissions_check
+        from .db_interactions import DB_interactions 
         session_ID = self.scope['session'].get('session_ID')
         session_submissions, prev_images = self.get_session_submissions(session_ID)
 
