@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from .db_interactions import DB_interactions
+import time
 
 import boto3
 client = boto3.client('dynamodb', region_name='ap-northeast-1')
@@ -20,7 +21,7 @@ def check_submissions_or_create(req):
         if check_session_exists.get('Item'):
             cur_submissions = int(check_session_exists['Item']['Tokens']['N'])
         else:
-            client.put_item(
+            put_call = client.put_item(
                 TableName = 'SessionData',
                 Item = {
                     'SessionID': {'S': session_ID},
@@ -29,7 +30,6 @@ def check_submissions_or_create(req):
                     }
             )
             cur_submissions = 5
-            print('needed to restart a session token')
 
         # so we can check the DynamoDB table from the Websocket connection.
         req.session['session_ID'] = session_ID
@@ -39,8 +39,6 @@ def check_submissions_or_create(req):
     except:
         print('cant get access to the sessionID of the browser cookies. You get Nothing')
         return 0
-        
-
 
     # old code
     # if not req.session.__contains__('submissions'):

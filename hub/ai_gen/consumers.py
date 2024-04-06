@@ -2,21 +2,20 @@ import json
 from channels.generic.websocket import WebsocketConsumer
 import random
 from openai import OpenAI
-from dotenv import load_dotenv
 import os
 import boto3
 import time
-load_dotenv()
+ssm = boto3.client('ssm')
+parameter = ssm.get_parameter(Name='OpAI_API_Key',WithDecryption=True).get('Parameter').get('Value')
+openAI_client = OpenAI(api_key=parameter)
+snsclient = boto3.client('sns',region_name='ap-northeast-1')
 
-
-client = OpenAI(api_key=os.getenv('OPEN_AI_Secret_Key'))
 
 class FeedConsumer(WebsocketConsumer):
     # if its a live test or dummy test.
     CALL_OPENAI = True
     client = boto3.client('dynamodb', region_name='ap-northeast-1')
     
-
     def get_session_submissions(self, sess_id):
         
         resp = self.client.get_item(
@@ -74,8 +73,16 @@ class FeedConsumer(WebsocketConsumer):
             self.send(text_data=json.dumps({
                 'type': 'DB_Success',
                 'result' : 'initial DB setup',
-                'submissions_left' : session_submissions
+                'submissions_left' : session_submissions,
+                'prev_submissions' : prev_images
             }))
+            gen_time = str(time.time())
+            snsclient.publish(
+                TopicArn='arn:aws:sns:ap-northeast-1:546197898501:OpenAI_Image_Generated',
+                Subject=f'OpenAI Image Generated at {gen_time}',
+                Message=json.dumps({'default': json.dumps({'mess':'someone send an Image Gen call'})}),
+                MessageStructure='json'
+            )
         except:
             self.send(text_data=json.dumps({
                 'type': 'DB_fail',
@@ -136,7 +143,7 @@ class FeedConsumer(WebsocketConsumer):
                 # to check whether I will do paid request or just test it. 
                 if self.CALL_OPENAI:
                     # Dall-E api call 
-                    response = client.images.generate(prompt= promt_for_dall_e,
+                    response = openAI_client.images.generate(prompt= promt_for_dall_e,
                     n=1,
                     # size="256x256",
                     size ='512x512')

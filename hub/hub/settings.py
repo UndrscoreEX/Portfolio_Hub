@@ -1,10 +1,10 @@
 
 from pathlib import Path
-from dotenv import load_dotenv
 import os
+import boto3
+ssm = boto3.client('ssm')
+parameter = ssm.get_parameter(Name='SECRET_KEY').get('Parameter').get('Value')
 
-# Load environment variables from .env file
-load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,13 +13,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 AI_GEN_TEMPLATE_DIR = BASE_DIR / 'ai_gen/templates/ai_image_gen'
 
-print(AI_GEN_TEMPLATE_DIR)
 
 S3_PREFIX = "https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com"
 CLOUDFRONT_PREFIX = "https://d38261ux8dbby0.cloudfront.net"
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+# SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = parameter
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
