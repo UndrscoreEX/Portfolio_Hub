@@ -5,7 +5,7 @@ from openai import OpenAI
 import os
 import boto3
 import time
-ssm = boto3.client('ssm')
+ssm = boto3.client('ssm',region_name='ap-northeast-1')
 parameter = ssm.get_parameter(Name='OpAI_API_Key',WithDecryption=True).get('Parameter').get('Value')
 openAI_client = OpenAI(api_key=parameter)
 snsclient = boto3.client('sns',region_name='ap-northeast-1')
@@ -14,11 +14,11 @@ snsclient = boto3.client('sns',region_name='ap-northeast-1')
 class FeedConsumer(WebsocketConsumer):
     # if its a live test or dummy test.
     CALL_OPENAI = True
-    client = boto3.client('dynamodb', region_name='ap-northeast-1')
+    dynamoDB_client = boto3.client('dynamodb', region_name='ap-northeast-1')
     
     def get_session_submissions(self, sess_id):
         
-        resp = self.client.get_item(
+        resp = self.dynamoDB_client.get_item(
         TableName = 'SessionData',
         Key={
             "SessionID": {'S': sess_id},
@@ -35,7 +35,7 @@ class FeedConsumer(WebsocketConsumer):
     
     def set_session_submissions(self, sess_id, value, img):
 
-        self.client.update_item(
+        self.dynamoDB_client.update_item(
             TableName = 'SessionData',
             Key={
                  "SessionID": {'S': sess_id},
