@@ -2,7 +2,7 @@
 from pathlib import Path
 import os
 import boto3
-ssm = boto3.client('ssm')
+ssm = boto3.client('ssm',region_name='ap-northeast-1')
 parameter = ssm.get_parameter(Name='SECRET_KEY').get('Parameter').get('Value')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
