@@ -25,7 +25,7 @@ class FeedConsumer(WebsocketConsumer):
             },
         ) 
 
-        print(resp)
+        print('FEEDCONSUMER RESPONSE',resp)
         token = int(resp['Item']['Tokens']['N'])
         if resp['Item'].get('ImageCode'):
             img_arr = (resp['Item']['ImageCode']['SS'])

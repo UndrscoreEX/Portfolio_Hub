@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from .db_interactions import DB_interactions
 import time
+import random
 
 import boto3
 client = boto3.client('dynamodb', region_name='ap-northeast-1')
@@ -9,8 +10,18 @@ client = boto3.client('dynamodb', region_name='ap-northeast-1')
 # check for/ create initial tokens
 def check_submissions_or_create(req):
     
-    try:
+    # Accessing the session value is done on the consumer.py page but it cant be accessed in the same way with cookies here. 
+    # For that reason, the bootstrap solution is to make a new one here. Its a stop-gap, as the we can get the sessionId after the first submission is completed. You're granting 1 exra token at the start 
+    # find out why. 
+    print('pre-check')
+    if not req.COOKIES.get('sessionid'):
+        session_ID =  str(int(random.random() * 10000))
+        req.COOKIES['sessionid'] = session_ID
+    else:
         session_ID = req.COOKIES.get('sessionid')
+
+    # print(session_ID)
+    try:
         check_session_exists = client.get_item(
             TableName = 'SessionData',
             Key={
@@ -20,8 +31,10 @@ def check_submissions_or_create(req):
 
         if check_session_exists.get('Item'):
             cur_submissions = int(check_session_exists['Item']['Tokens']['N'])
+            print('found it find it')
         else:
-            put_call = client.put_item(
+            # put_call = client.put_item(
+            client.put_item(
                 TableName = 'SessionData',
                 Item = {
                     'SessionID': {'S': session_ID},
@@ -29,16 +42,27 @@ def check_submissions_or_create(req):
                     'SessionTTL' : {'N':str(int(time.time()+86400))}
                     }
             )
+            print('didnt find it, granting a new one')
             cur_submissions = 5
+    except:
+        # print('cant get access to the sessionID of the browser cookies. You get Nothing')
+        client.put_item(
+                    TableName = 'SessionData',
+                    Item = {
+                        'SessionID': {'S': session_ID},
+                        'Tokens': {'N': '5'},
+                        'SessionTTL' : {'N':str(int(time.time()+86400))}
+                        }
+                )
+        print('didnt find it, granting a new one')
+        cur_submissions = 5 
 
         # so we can check the DynamoDB table from the Websocket connection.
-        req.session['session_ID'] = session_ID
-        req.session.save()
+    req.session['session_ID'] = session_ID
+    req.session.save()
 
-        return cur_submissions
-    except:
-        print('cant get access to the sessionID of the browser cookies. You get Nothing')
-        return 0
+    return cur_submissions
+
 
     # old code
     # if not req.session.__contains__('submissions'):
@@ -56,6 +80,7 @@ class Home_page(View):
         all_theme_tags = [x.name for x in DB_interactions.tags.all()]
 
         submissions = check_submissions_or_create(req=request) 
+        print("**************",submissions)
 
         # populating the initial set of themes under the search bar
         theme_tags_for_search = DB_interactions.tags.all()

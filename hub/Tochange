@@ -1,0 +1,6 @@
+- Not sure why the consumers.py is not sending the sessionID correctly. Generating a new 4 digit ID on the views page has been my solution. 
+  reason: The access to cookies and session data seem to be different and both cannot be accessed at the same time and in the same way on views/consumers.py
+
+- Next step is to add the side bar with links to previous GPT images. 
+
+- CSRF token for Bach calculator.

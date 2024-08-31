@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import os
 import boto3
@@ -13,6 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 AI_GEN_TEMPLATE_DIR = BASE_DIR / 'ai_gen/templates/ai_image_gen'
 
+#
+# only for dev
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#
+#
 
 S3_PREFIX = "https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com"
 CLOUDFRONT_PREFIX = "https://d38261ux8dbby0.cloudfront.net"
@@ -73,7 +78,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'hub.wsgi.application'
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.underscore-ex.com',
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -120,17 +127,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
 # STATIC_ROOT = None
 
 # S3_MEDIA_ROOT = 'https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/'
 # S3_URL_PREFIX = 'static/'
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / "bach_calc/static",
-#     BASE_DIR / "portfolio/static/portfolio",
-#     BASE_DIR / "ai_gen/static",
-# ]
+STATICFILES_DIRS = [
+    # BASE_DIR / "bach_calc/static",
+    # BASE_DIR / "portfolio/static/portfolio",
+    # BASE_DIR / "ai_gen/static",
+    BASE_DIR / "static"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
