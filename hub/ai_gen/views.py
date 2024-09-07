@@ -20,7 +20,9 @@ def check_submissions_or_create(req):
     else:
         session_ID = req.COOKIES.get('sessionid')
 
-    # print(session_ID)
+    print(f"\n\n***************{session_ID}****************\n\n")
+
+    print(session_ID)
     try:
         check_session_exists = client.get_item(
             TableName = 'SessionData',
@@ -59,7 +61,7 @@ def check_submissions_or_create(req):
 
         # so we can check the DynamoDB table from the Websocket connection.
     req.session['session_ID'] = session_ID
-    req.session.save()
+    # req.session.save()
 
     return cur_submissions
 
