@@ -6,15 +6,16 @@ import os
 import boto3
 import time
 ssm = boto3.client('ssm',region_name='ap-northeast-1')
+client = boto3.client('dynamodb', region_name='ap-northeast-1')
 parameter = ssm.get_parameter(Name='OpAI_API_Key',WithDecryption=True).get('Parameter').get('Value')
 openAI_client = OpenAI(api_key=parameter)
 snsclient = boto3.client('sns',region_name='ap-northeast-1')
+dynamoDB_client = boto3.client('dynamodb', region_name='ap-northeast-1')
 
 
 class FeedConsumer(WebsocketConsumer):
     # if its a live test or dummy test.
     CALL_OPENAI = True
-    dynamoDB_client = boto3.client('dynamodb', region_name='ap-northeast-1')
     
     def get_session_submissions(self, sess_id):
         

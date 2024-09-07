@@ -10,19 +10,20 @@ client = boto3.client('dynamodb', region_name='ap-northeast-1')
 # check for/ create initial tokens
 def check_submissions_or_create(req):
     
-    # Accessing the session value is done on the consumer.py page but it cant be accessed in the same way with cookies here. 
-    # For that reason, the bootstrap solution is to make a new one here. Its a stop-gap, as the we can get the sessionId after the first submission is completed. You're granting 1 exra token at the start 
-    # find out why. 
-    print('pre-check')
+    # prev, using Cookies+ sessions+ DynamoDB. cookies and sessions break randomly 
+    # Will pull the cookie sessionID, but I will put it to DynamoDB and then reference it each time. If that doesnt work, ill generate it myself. 
+
+
+    print('pre-check for sessionID')
     if not req.COOKIES.get('sessionid'):
         session_ID =  str(int(random.random() * 10000))
         req.COOKIES['sessionid'] = session_ID
+        print("There was no sessionID from the start")
     else:
         session_ID = req.COOKIES.get('sessionid')
 
     print(f"\n\n***************{session_ID}****************\n\n")
 
-    print(session_ID)
     try:
         check_session_exists = client.get_item(
             TableName = 'SessionData',
@@ -33,7 +34,7 @@ def check_submissions_or_create(req):
 
         if check_session_exists.get('Item'):
             cur_submissions = int(check_session_exists['Item']['Tokens']['N'])
-            print('found it find it')
+            print('Session already exists in DB')
         else:
             # put_call = client.put_item(
             client.put_item(
@@ -47,7 +48,6 @@ def check_submissions_or_create(req):
             print('didnt find it, granting a new one')
             cur_submissions = 5
     except:
-        # print('cant get access to the sessionID of the browser cookies. You get Nothing')
         client.put_item(
                     TableName = 'SessionData',
                     Item = {
@@ -59,9 +59,10 @@ def check_submissions_or_create(req):
         print('didnt find it, granting a new one')
         cur_submissions = 5 
 
-        # so we can check the DynamoDB table from the Websocket connection.
+    # so we can check the DynamoDB table from the Websocket connection.
+    # going to work without using this session below:
     req.session['session_ID'] = session_ID
-    # req.session.save()
+    req.session.save()
 
     return cur_submissions
 
@@ -88,6 +89,8 @@ class Home_page(View):
         theme_tags_for_search = DB_interactions.tags.all()
         theme_tags_for_search = [x[0] for x in theme_tags_for_search.values_list("name")]
 
+
+        print('just before the render is sent. It means it failed at the very end')
         # print('checking sessions after initial check: ',  request.session.session_key, request.session['submissions'] )
         # print(images, submissions, all_theme_tags, )
         return render(request,'ai_image_gen/index.html',{
