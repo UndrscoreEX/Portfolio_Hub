@@ -60,8 +60,13 @@ def check_submissions_or_create(req):
 
     # so we can check the DynamoDB table from the Websocket connection.
     # going to work without using this session below:
-    req.session['session_ID'] = session_ID
-    req.session.save()
+    try: 
+        req.session['session_ID'] = session_ID
+        print('added sessionID to session')
+        req.session.save()
+        print('saving')
+    except:
+        print('couldnt add or save ')
 
     return cur_submissions
 
