@@ -11,7 +11,6 @@ client = boto3.client('dynamodb', region_name='ap-northeast-1')
 def check_submissions_or_create(req):
     
     # prev, using Cookies+ sessions+ DynamoDB. cookies and sessions break randomly 
-    # Will pull the cookie sessionID, but I will put it to DynamoDB and then reference it each time. If that doesnt work, ill generate it myself. 
 
 
     print('pre-check for sessionID')
