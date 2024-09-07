@@ -18,7 +18,7 @@ def check_submissions_or_create(req):
     if not req.COOKIES.get('sessionid'):
         session_ID =  str(int(random.random() * 10000))
         req.COOKIES['sessionid'] = session_ID
-        print("There was no sessionID from the start")
+        print("There was no sessionID from the start")    
     else:
         session_ID = req.COOKIES.get('sessionid')
 
