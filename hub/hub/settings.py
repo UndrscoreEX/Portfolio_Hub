@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1','18.176.194.245', 'underscore-ex.com', 
 
 # Application definition
 INSTALLED_APPS = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware'
     'channels',
     'daphne',
     'django.contrib.admin',
