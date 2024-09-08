@@ -10,13 +10,17 @@ client = boto3.client('dynamodb', region_name='ap-northeast-1')
 # check for/ create initial tokens
 def check_submissions_or_create(req):
     
+    if not req.session.session_key:
+        req.session['initialized'] = True  
+        req.session.save()
+        print("Session was created")
+        
     print('pre-check for sessionID')
     print("session key: ",req.session.session_key)
 
     # skipping cookies. only using session>session key like above
     session_ID = req.session.session_key
     
-
 
 
     # //// dont need this
