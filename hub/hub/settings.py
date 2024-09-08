@@ -32,8 +32,6 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1','18.176.194.245', 'underscore-ex.com', 
 
 # Application definition
 INSTALLED_APPS = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware'
     'channels',
     'daphne',
     'django.contrib.admin',
@@ -42,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'django.middleware.security.SecurityMiddleware',
+    # 'django.contrib.sessions.middleware.SessionMiddleware'
     'ai_gen',
     'bach_calc',
     'portfolio',
