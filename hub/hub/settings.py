@@ -92,6 +92,7 @@ DATABASES = {
     }
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1200  # 20 minutes
 
 
 # Password validation

@@ -10,18 +10,25 @@ client = boto3.client('dynamodb', region_name='ap-northeast-1')
 # check for/ create initial tokens
 def check_submissions_or_create(req):
     
-    # prev, using Cookies+ sessions+ DynamoDB. cookies and sessions break randomly 
-
-
     print('pre-check for sessionID')
-    if not req.COOKIES.get('sessionid'):
-        session_ID =  str(int(random.random() * 10000))
-        req.COOKIES['sessionid'] = session_ID
-        print("There was no sessionID from the start")    
-    else:
-        session_ID = req.COOKIES.get('sessionid')
+    print("session key: ",req.session.session_key)
 
-    print(f"\n\n***************{session_ID}****************\n\n")
+    # skipping cookies. only using session>session key like above
+    session_ID = req.session.session_key
+    
+
+
+
+    # //// dont need this
+    # if not req.COOKIES.get('sessionid'):
+    #     session_ID =  str(int(random.random() * 10000))
+    #     # req.COOKIES['sessionid'] = session_ID
+
+    #     print("There was no sessionID from the start")    
+    # else:
+    #     session_ID = req.COOKIES.get('sessionid')   
+
+    # print(f"\n\n***************{session_ID}****************\n\n")
 
     try:
         check_session_exists = client.get_item(
@@ -94,7 +101,6 @@ class Home_page(View):
         theme_tags_for_search = [x[0] for x in theme_tags_for_search.values_list("name")]
 
 
-        print('just before the render is sent. It means it failed at the very end')
         # print('checking sessions after initial check: ',  request.session.session_key, request.session['submissions'] )
         # print(images, submissions, all_theme_tags, )
         return render(request,'ai_image_gen/index.html',{
