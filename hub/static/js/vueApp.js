@@ -48,6 +48,7 @@ const app = Vue.createApp({
         search(newVal) {
           if (newVal){
             let capNewVal = newVal[0].toLowerCase() + newVal.slice(1)
+            console.log(this.search_list_str, this.search_list, capNewVal)
             if (this.search_list_str.includes(' '+capNewVal)){
               this.includes = true
             }
@@ -72,11 +73,20 @@ const app = Vue.createApp({
         
         // :: when vue is mounted
         mounted(){
-
+          // old code:
           // let url = `wss://${window.location.host}/ws/socket-server/`
-          let url = `wss://${window.location.host}/ws/socket-server/`
+          // let url = `ws://${window.location.host}/ws/socket-server/`
+
+          let url = window.location.protocol === 'https:' 
+          ? `wss://${window.location.host}/ws/socket-server/`
+          : `ws://${window.location.host}/ws/socket-server/`
+
+          // check if it works
           this.feedSocket = new WebSocket(url)     
 
+          url.onopen = () => console.log('Connection opened');
+          url.onerror = (error) => console.error('WebSocket error:', error);
+          
           let form = document.getElementById('form')
           form.addEventListener('submit', (e)=>{
             e.preventDefault()
@@ -97,12 +107,21 @@ const app = Vue.createApp({
             form.reset()
 
           })
-          
+
+          // testing if the websocket it open
+          if (this.feedSocket.readyState === WebSocket.OPEN) {
+            this.feedSocket.send(JSON.stringify({
+              'message': kw
+            }));
+          } else {
+            console.error("WebSocket is not open.");
+          }
+        
           
           // :: must be arrow function to get access to the vue object (this.)
           this.feedSocket.onmessage = (e)=> {
             data = JSON.parse(e.data)
-            // console.log('websocket message',data)
+            console.log('websocket message',data)
             
                 // :: if we got a result from the api
                 if (data.type) {
@@ -169,6 +188,9 @@ const app = Vue.createApp({
                       this.error_reason = data.result
                       break
                     }
+                }
+                else{
+                  console.log('WebSocket API connection failed I guesss')
                 }
               }
         },
