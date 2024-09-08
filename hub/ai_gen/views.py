@@ -3,7 +3,6 @@ from django.views import View
 from .db_interactions import DB_interactions
 import time
 # import random
-
 import boto3
 client = boto3.client('dynamodb', region_name='ap-northeast-1')
 
@@ -14,7 +13,7 @@ def check_submissions_or_create(req):
         req.session['initialized'] = True  
         req.session.save()
         print("Session was created")
-        
+
     print('pre-check for sessionID')
     print("session key: ",req.session.session_key)
 
@@ -71,15 +70,14 @@ def check_submissions_or_create(req):
 
     # so we can check the DynamoDB table from the Websocket connection.
     # going to work without using this session below:
-    try: 
-        req.session['session_ID'] = session_ID
-        print('added sessionID to session')
-        req.session.save()
-        print('saving')
-    except:
-        print('couldnt add or save ')
+    # try: 
+    #     req.session['session_ID'] = session_ID
+    #     print('added sessionID to session')
+    #     req.session.save()
+    #     print('saving')
+    # except:
+    #     print('couldnt add or save ')
 
-    return cur_submissions
 
 
     # old code
@@ -88,6 +86,7 @@ def check_submissions_or_create(req):
     #     req.session.save()
     # return req.session.__getitem__('submissions')
 
+    return cur_submissions
 
 class Home_page(View):
     def get(self,request):

@@ -6,19 +6,16 @@ import os
 import boto3
 import time
 ssm = boto3.client('ssm',region_name='ap-northeast-1')
-client = boto3.client('dynamodb', region_name='ap-northeast-1')
 parameter = ssm.get_parameter(Name='OpAI_API_Key',WithDecryption=True).get('Parameter').get('Value')
 openAI_client = OpenAI(api_key=parameter)
 snsclient = boto3.client('sns',region_name='ap-northeast-1')
 dynamoDB_client = boto3.client('dynamodb', region_name='ap-northeast-1')
-
 
 class FeedConsumer(WebsocketConsumer):
     # if its a live test or dummy test.
     CALL_OPENAI = True
     
     def get_session_submissions(self, sess_id):
-        
         resp = self.dynamoDB_client.get_item(
         TableName = 'SessionData',
         Key={
@@ -61,12 +58,9 @@ class FeedConsumer(WebsocketConsumer):
             )
         print('proof that the images were loaded', img)
         
-        
-
     def connect(self):
         self.accept()  
         session_ID = self.scope['session'].get('session_ID')
-        # instead of checking session for tokens, ill check session for sessionID, then query Dynamodb table
         print(self.scope['session'].items())
         session_submissions, prev_images = self.get_session_submissions(session_ID)
         try:
@@ -89,8 +83,6 @@ class FeedConsumer(WebsocketConsumer):
                 'type': 'DB_fail',
             }))
 
-
-
     def receive(self, text_data):
         from .db_interactions import DB_interactions 
         session_ID = self.scope['session'].get('session_ID')
@@ -100,7 +92,6 @@ class FeedConsumer(WebsocketConsumer):
         message = text_data_json['message']
 
         salt = DB_interactions.get_salt()
-        # print(salt)
 
         try:
             theme_tags = DB_interactions.get_image_tags(theme_tags=message)
@@ -110,17 +101,13 @@ class FeedConsumer(WebsocketConsumer):
             random_option = random.choice(associated_quote_list)
             img_tags_to_focus_on = random_option.image_tag.all()
 
-
             book = random_option.book.name
             themes = ', '.join([x.name for x in random_option.theme_tag.all()])
             author = random_option.book.author
             quote = random_option.text
             img_tags = [x.name for x in img_tags_to_focus_on]
-            # print(author,book, themes, quote)
-        
             joined_img_tags = ', '.join(img_tags)
 
-            # print('image tags to be used', img_tags)
             info_from_db = {
                 'chosen_theme' : message,
                 'all_themes' : themes,
@@ -128,9 +115,7 @@ class FeedConsumer(WebsocketConsumer):
                 'author' : author,
                 'img_tags' : joined_img_tags,
                 'quote': quote,
-
             }
-
             # 　checks if there are enough tokens. 
             if session_submissions>0:  
                 promt_for_dall_e = f'create an an scene that contains the themes of {joined_img_tags} {salt}'
@@ -139,8 +124,6 @@ class FeedConsumer(WebsocketConsumer):
 
                 
                 # Updates the new number of tokens 
-
-
                 # to check whether I will do paid request or just test it. 
                 if self.CALL_OPENAI:
                     # Dall-E api call 
@@ -157,7 +140,6 @@ class FeedConsumer(WebsocketConsumer):
                     else:
                         prev_images = [dall_e_image,]
                     self.set_session_submissions(session_ID, session_submissions, prev_images)
-
 
                     # print('simulated succesful request')
                     self.send(text_data=json.dumps({
@@ -208,7 +190,6 @@ class FeedConsumer(WebsocketConsumer):
                 'result' : str(e),
             }))
             
-        
         
     def disconnect(self, close_code):
         pass
