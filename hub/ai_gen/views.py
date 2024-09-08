@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from .db_interactions import DB_interactions
 import time
-import random
+# import random
 
 import boto3
 client = boto3.client('dynamodb', region_name='ap-northeast-1')

@@ -2,14 +2,12 @@ from pathlib import Path
 import os
 import boto3
 ssm = boto3.client('ssm',region_name='ap-northeast-1')
-parameter = ssm.get_parameter(Name='SECRET_KEY').get('Parameter').get('Value')
+PARAMETER = ssm.get_parameter(Name='SECRET_KEY').get('Parameter').get('Value')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 AI_GEN_TEMPLATE_DIR = BASE_DIR / 'ai_gen/templates/ai_image_gen'
 
 #
@@ -24,7 +22,7 @@ CLOUDFRONT_PREFIX = "https://d38261ux8dbby0.cloudfront.net"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = os.getenv('SECRET_KEY')
-SECRET_KEY = parameter
+SECRET_KEY = PARAMETER
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,7 +31,6 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1','18.176.194.245', 'underscore-ex.com', 
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'channels',
     'daphne',
@@ -82,8 +79,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.underscore-ex.com',
 ]
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -94,9 +89,6 @@ DATABASES = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1200  # 20 minutes
 
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -114,9 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 ASGI_APPLICATION = 'hub.asgi.application'
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -124,12 +113,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-# STATIC_ROOT = None
 
 # S3_MEDIA_ROOT = 'https://portfolio-items-underscore-ex.s3.ap-northeast-1.amazonaws.com/PortfolioApp/'
 # S3_URL_PREFIX = 'static/'
@@ -141,12 +124,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# settings.py
 
 # LOGGING = {
 #     'version': 1,
