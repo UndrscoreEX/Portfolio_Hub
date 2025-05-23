@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Info</title>
+  <link rel="stylesheet" href="{% static 'styles/stylesheet.css' %}">
+</head>
+<body>
+
+<header>
+  📈 Stock Insight Tool
+</header>
+
+<form 
+  hx-post="{% url 'stock_info' %}"
+  hx-target="#stock-result"
+  hx-indicator="#loading-spinner"
+  id="stock-form"
+>
+  {% csrf_token %}
+  
+  <input name="api_key" id="api_key" placeholder="Enter your API Key">
+  
+  <div class="api-help">
+    Don't have an API key?
+    <a href="https://site.financialmodelingprep.com/" target="_blank">Get one here →</a>
+  </div>
+
+  <input name="code" placeholder="Enter stock code (e.g. AAPL)">
+  
+  <!-- example button -->
+  <button 
+  type="button"
+  hx-get="{% url 'example-result' %}"
+  hx-target="#stock-result"
+  hx-swap="innerHTML"
+  id="example-button"
+>
+  Show Example Result
+</button>
+  <button type="submit">Get Info</button>
+
+</form>
+
+<div id="loading-spinner">
+  <div class="spinner"></div>
+</div>
+
+<!-- new result -->
+<div id="stock-result"></div>
+<!-- example result -->
+<div id="example-result" style="display: none;"></div>
+
+<script src="https://unpkg.com/htmx.org@1.9.2"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const savedKey = localStorage.getItem("api_key");
+    if (savedKey) {
+      document.getElementById("api_key").value = savedKey;
+    }
+  });
+
+  document.getElementById("stock-form").addEventListener("submit", function() {
+    const apiKey = document.getElementById("api_key").value;
+    localStorage.setItem("api_key", apiKey);
+  });
+
+  document.body.addEventListener("htmx:beforeRequest", function(evt) {
+    document.querySelector("#stock-result").innerHTML = "";
+    document.querySelector("#loading-spinner").style.display = "block";
+  });
+
+  document.body.addEventListener("htmx:afterRequest", function(evt) {
+    document.querySelector("#loading-spinner").style.display = "none";
+  });
+</script>
+
+</body>
+</html>

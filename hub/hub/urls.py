@@ -7,6 +7,7 @@ urlpatterns = [
     path('', include('portfolio.urls') ),
     path('bach/', include('bach_calc.urls')),
     path('image/', include('ai_gen.urls')),
-    # path('/', include('portfolio.urls') ),
+    path('stock-eval/', include('stock.urls') ),
 
 ]
+    

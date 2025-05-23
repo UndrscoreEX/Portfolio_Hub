@@ -16,7 +16,7 @@ class FeedConsumer(WebsocketConsumer):
     CALL_OPENAI = True
     
     def get_session_submissions(self, sess_id):
-        resp = self.dynamoDB_client.get_item(
+        resp = dynamoDB_client.get_item(
         TableName = 'SessionData',
         Key={
             "SessionID": {'S': sess_id},
@@ -33,7 +33,7 @@ class FeedConsumer(WebsocketConsumer):
     
     def set_session_submissions(self, sess_id, value, img):
 
-        self.dynamoDB_client.update_item(
+        dynamoDB_client.update_item(
             TableName = 'SessionData',
             Key={
                  "SessionID": {'S': sess_id},
@@ -60,9 +60,29 @@ class FeedConsumer(WebsocketConsumer):
         
     def connect(self):
         self.accept()  
-        session_ID = self.scope['session'].get('session_ID')
-        print(self.scope['session'].items())
+
+        # old stuff
+        # session_ID = self.scope['session'].get('session_ID')
+        # print(self.scope['session'].items())
+        
+        # new part:
+        session = self.scope.get("session", None)
+        print("Scope keys:", self.scope.keys())
+
+        if session is None:
+            self.close()
+            return
+        
+        session_ID = session.session_key
+        if session_ID is None:
+            session.save()  # Force save to generate a session key
+            session_ID = session.session_key
+        # new part ends here
+
+        print(f"Session ID: {session_ID}")  # for debugging
         session_submissions, prev_images = self.get_session_submissions(session_ID)
+
+
         try:
             # all_theme_tags = [x.name for x in DB_interactions.tags.all()]
             self.send(text_data=json.dumps({
@@ -85,7 +105,23 @@ class FeedConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         from .db_interactions import DB_interactions 
-        session_ID = self.scope['session'].get('session_ID')
+
+        # old part:
+        # session_ID = self.scope['session'].get('session_ID')
+
+        # new bootstrap solution to the sessionID not being saved
+        session = self.scope.get("session", None)
+        if session is None:
+            self.close()
+            return
+        
+        session_ID = session.session_key
+        if session_ID is None:
+            session.save()  # Force save to generate a session key
+            session_ID = session.session_key
+
+        # new part ends here
+
         session_submissions, prev_images = self.get_session_submissions(session_ID)
 
         text_data_json = json.loads(text_data)
@@ -116,21 +152,27 @@ class FeedConsumer(WebsocketConsumer):
                 'img_tags' : joined_img_tags,
                 'quote': quote,
             }
+            print(info_from_db)
             # 　checks if there are enough tokens. 
             if session_submissions>0:  
                 promt_for_dall_e = f'create an an scene that contains the themes of {joined_img_tags} {salt}'
                 session_submissions -= 1
+                print(promt_for_dall_e)
                 # self.scope["session"]['submissions'] = session_submissions
 
-                
+                print("calling OpenAI")
                 # Updates the new number of tokens 
                 # to check whether I will do paid request or just test it. 
                 if self.CALL_OPENAI:
                     # Dall-E api call 
-                    response = openAI_client.images.generate(prompt= promt_for_dall_e,
-                    n=1,
-                    # size="256x256",
-                    size ='512x512')
+                    response = openAI_client.images.generate(
+                        prompt= promt_for_dall_e,
+                        size="1024x1024",
+                        response_format="url",
+                        model="dall-e-3"
+                    )
+
+                    print("request completed")
 
                     dall_e_image = response.data[0].url
                     print('Image URL: ',dall_e_image)
