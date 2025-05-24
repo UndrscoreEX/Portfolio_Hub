@@ -1,5 +1,10 @@
 # .gitignore
 
+
+**.pyc
+**.pyo
+**/__pycache__/**
+__pycache__/**
 __pycache__/
 hub/.env
 hub/ToDo

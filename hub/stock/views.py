@@ -8,12 +8,12 @@ def index(request):
 def stock_info(request):
     api_key = request.POST.get('api_key')  
     stock_code = request.POST.get('code')  
+    print("pre data check", api_key, stock_code) 
     if not api_key or not stock_code:
         return render(request, "core/_stock_result.html", {
             "error": "⚠️ missing Key or Ticker is missing. Please retry. ⚠️"
         })    
 
-    print("pre data check")
     data = full_stock_evaluation(stock_code, api_key)
     print("post data check")
 
