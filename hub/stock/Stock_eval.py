@@ -5,16 +5,27 @@ import time
 # ssm = boto3.client('ssm',region_name='ap-northeast-1')
 # FMP_APIkey = ssm.get_parameter(Name='FMP_API',WithDecryption=True).get('Parameter').get('Value')
 
-def get_realtime_data(ticker):
-    stock = yf.Ticker(ticker)
-    info = stock.info
-    return {
-        "current_price": info.get("currentPrice"),
-        "shares_outstanding": info.get("sharesOutstanding"),
-        "ttm_eps": info.get("trailingEps"),
-        "cash": info.get("totalCash"),
-        "stock_assets": info.get("totalAssets"), 
-    }
+def get_realtime_data(ticker=None):
+    print('checking real time data')
+    if not ticker or not ticker.strip():
+        raise ValueError("Ticker symbol must not be empty")
+    try:
+        stock = yf.Ticker(ticker)
+        info = stock.info
+
+        if not info:
+            raise ValueError(f"No data found for ticker '{ticker}'")
+
+        return {
+            "current_price": info.get("currentPrice"),
+            "shares_outstanding": info.get("sharesOutstanding"),
+            "ttm_eps": info.get("trailingEps"),
+            "cash": info.get("totalCash"),
+            "stock_assets": info.get("totalAssets"), 
+        }
+    except Exception as e:
+        print(f"Error fetching data for ticker '{ticker}': {e}")
+        return None
 
 def get_fmp_data(ticker, api_key):  
     base_url = f"https://financialmodelingprep.com/api/v3/"
@@ -100,6 +111,7 @@ def rule1_valuation(eps, growth_rate, future_pe, years=10):
 
 def full_stock_evaluation(ticker, api_key):  
     print(f"Checking {ticker}...\n")
+    print(f"[DEBUG] full_stock_evaluation received ticker: '{ticker}'")
     realtime = get_realtime_data(ticker)
     fmp = get_fmp_data(ticker, api_key)
     if not fmp.get('company_info'):
