@@ -113,8 +113,9 @@ def full_stock_evaluation(ticker, api_key):
     print(f"Checking {ticker}...\n")
     print(f"[DEBUG] full_stock_evaluation received ticker: '{ticker}'")
     realtime = get_realtime_data(ticker)
+
     fmp = get_fmp_data(ticker, api_key)
-    if not fmp.get('company_info'):
+    if not fmp.get('company_info') or not realtime:
         return False
 
     income = fmp["income"]
