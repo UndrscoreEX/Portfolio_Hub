@@ -84,6 +84,13 @@ const app = Vue.createApp({
           // check if it works
           this.feedSocket = new WebSocket(url)     
 
+          this.feedSocket.onopen = () => {
+            console.log('WebSocket connection opened');
+          };
+          this.feedSocket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+          };
+
           url.onopen = () => console.log('Connection opened');
           url.onerror = (error) => console.error('WebSocket error:', error);
           
@@ -201,11 +208,16 @@ const app = Vue.createApp({
               this.error_message = null
               // console.log('sending', kw)
               // console.log(this.submissions_remaining, this.img_tags, this.search_list_str)
-              this.feedSocket.send(JSON.stringify({
-                'message':kw
-              }))
-              this.loading = true
-              this.some_response = false
+              if (this.feedSocket.readyState === WebSocket.OPEN) {
+                this.feedSocket.send(JSON.stringify({
+                  'message': kw
+                }));
+                this.loading = true;
+                this.some_response = false;
+              } else {
+                this.error_message = 'WebSocket is not open.';
+                console.error("WebSocket is not open. Message not sent.****");
+              }
   
               // :: start the loading gif
               // console.log('loading is true::::')

@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import boto3
+from dotenv import load_dotenv
 ssm = boto3.client('ssm',region_name='ap-northeast-1')
 PARAMETER = ssm.get_parameter(Name='SECRET_KEY').get('Parameter').get('Value')
 
@@ -13,6 +14,10 @@ AI_GEN_TEMPLATE_DIR = BASE_DIR / 'ai_gen/templates/ai_image_gen'
 
 #
 # only for dev
+STATICFILES_DIRS = [
+    BASE_DIR / "ai_gen" /"static",
+]
+print(STATICFILES_DIRS)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 #
@@ -26,7 +31,7 @@ CLOUDFRONT_PREFIX = "https://d38261ux8dbby0.cloudfront.net"
 SECRET_KEY = PARAMETER
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv("SYSTEM") == 'dev'
 
 ALLOWED_HOSTS = ['localhost','127.0.0.1','18.176.194.245', 'underscore-ex.com', 'www.underscore-ex.com', '0.0.0.0']
 

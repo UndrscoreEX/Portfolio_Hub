@@ -20,13 +20,16 @@
   id="stock-form"
 >
   {% csrf_token %}
-  
-  <input name="api_key" id="api_key" placeholder="Enter your API Key">
-  
-  <div class="api-help">
-    Don't have an API key?
-    <a href="https://site.financialmodelingprep.com/" target="_blank">Get one here </a>
+  {% if error %}
+  <div id="api-key-section" style="margin-top: 1em;">
+    <input name="api_key" id="api_key" placeholder="Enter your API Key">
+    <div class="api-help">
+      Don't have an API key?
+    <a href="https://site.financialmodelingprep.com/" target="_blank">Get one here →</a>
   </div>
+</div>
+{% endif %}
+  
 
   <input name="code" placeholder="Enter stock code (e.g. AAPL)">
   

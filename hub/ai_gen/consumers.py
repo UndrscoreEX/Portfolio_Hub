@@ -167,9 +167,9 @@ class FeedConsumer(WebsocketConsumer):
                     # Dall-E api call 
                     response = openAI_client.images.generate(
                         prompt= promt_for_dall_e,
-                        size="1024x1024",
+                        size="512x512",
                         response_format="url",
-                        model="dall-e-3"
+                        model="dall-e-2"
                     )
 
                     print("request completed")

@@ -8,18 +8,21 @@ def index(request):
 def stock_info(request):
     api_key = request.POST.get('api_key')  
     stock_code = request.POST.get('code')  
-    print("pre data check", api_key, stock_code) 
-    if not api_key or not stock_code:
+    # maybe add a popup if the API key doesnt work. 
+    if not stock_code:
         return render(request, "core/_stock_result.html", {
-            "error": "⚠️ missing Key or Ticker is missing. Please retry. ⚠️"
+            "error": "⚠️ Ticker is missing (or my API key has run out so add a new one). Please retry. ⚠️"
         })    
-
-    data = full_stock_evaluation(stock_code, api_key)
+    if api_key :
+        data = full_stock_evaluation(stock_code, api_key)
+    else:
+        data = full_stock_evaluation(stock_code)
+    # data = full_stock_evaluation(stock_code, API_KEY)
     print("post data check")
-
+    
     if not data:
         return render(request, "core/_stock_result.html", {
-            "error": "⚠️ API key or Ticker is invalid. Please retry. ⚠️"
+            "error": "⚠️ Ticker is missing (or my API key has run out so add a new one). Please retry. ⚠️"
         })
 
     return render(request, "core/_stock_result.html", {"data": data})

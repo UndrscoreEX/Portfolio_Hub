@@ -1,9 +1,10 @@
 import yfinance as yf
 import requests
 import time
+import boto3
 
-# ssm = boto3.client('ssm',region_name='ap-northeast-1')
-# FMP_APIkey = ssm.get_parameter(Name='FMP_API',WithDecryption=True).get('Parameter').get('Value')
+ssm = boto3.client('ssm',region_name='ap-northeast-1')
+FMP_APIkey = ssm.get_parameter(Name='Stock_API',WithDecryption=True).get('Parameter').get('Value')
 
 def get_realtime_data(ticker=None):
     print('checking real time data')
@@ -109,12 +110,16 @@ def rule1_valuation(eps, growth_rate, future_pe, years=10):
         "50% Margin of Safety": round(present_value / 1.5, 2),
     }
 
-def full_stock_evaluation(ticker, api_key):  
-    print(f"Checking {ticker}...\n")
+def full_stock_evaluation(ticker, api_key=None):  
+    final_api_key = FMP_APIkey if not api_key else api_key
+
+    print(f"Checking {ticker}...\n\n\n")
     print(f"[DEBUG] full_stock_evaluation received ticker: '{ticker}'")
     realtime = get_realtime_data(ticker)
 
-    fmp = get_fmp_data(ticker, api_key)
+    # getting my api key
+    
+    fmp = get_fmp_data(ticker, final_api_key)
     if not fmp.get('company_info') or not realtime:
         return False
 
