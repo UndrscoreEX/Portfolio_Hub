@@ -33,7 +33,7 @@ SECRET_KEY = PARAMETER
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("SYSTEM") == 'dev'
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','18.176.194.245', 'underscore-ex.com', 'www.underscore-ex.com', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','18.176.194.245', 'underscore-ex.com', 'www.underscore-ex.com', '0.0.0.0','www.google.com']
 
 
 # Application definition

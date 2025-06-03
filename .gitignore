@@ -10,3 +10,5 @@ hub/.env
 hub/ToDo
 venv/
 venv
+
+hub/db.sqlite3
