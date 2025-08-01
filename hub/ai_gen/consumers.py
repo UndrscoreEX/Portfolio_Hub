@@ -195,7 +195,7 @@ class FeedConsumer(WebsocketConsumer):
                     }))
 
 
-                    # :::: to save to db / not working as of yet.
+                    # :::: to save to db / not working as of yet.  dont forget to start tracking the SQLdb / remove from gitignore
                     # try:
                     #     DB_interactions.save_new_image(quote=random_option, url=dall_e_image, prompt_text=promt_for_dall_e)
                     # except Exception as e:
